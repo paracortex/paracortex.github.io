@@ -68,14 +68,21 @@ STL是一些“容器”的集合，这些“容器”有list,vector,set,map等
 
 STL可分为容器(containers)、迭代器(iterators)、空间配置器(allocator)、配接器(adapters)、算法(algorithms)、仿函数(functors)六个部分。
 
-```bash <vector>,<list>,<deque>,<set>,<map>,<stack>和<queue>
+```bash
+
+<vector>,<list>,<deque>,<set>,<map>,<stack>和<queue>
+
 ```
-迭代器部分主要由头文件<utility>,<iterator>和<memory>组成。<utility>是一个很小的头文件，<memory>中的主要部分是模板类allocator，它负责产生所有容器中的默认分配器。
+迭代器部分主要由头文件
+```bash
+
+<utility>,<iterator>和<memory>组成。<utility>是一个很小的头文件，<memory>中的主要部分是模板类allocator，它负责产生所有容器中的默认分配器。
+
 
 算法部分主要由头文件<algorithm>，<numeric>和<functional>组成。<algorithm>是所有STL头文件中最大的一个
 
 <numeric>体积很小，只包括几个在序列上面进行简单数学运算的模板函数，包括加法和乘法在序列上的一些操作。<functional>中则定义了一些模板类，用以声明函数对象
-
+```
 size_t是全局定义的类型；size_type是STL类中定义的类型属性，用以保存任意string和vector类对象的长度
 
 size_type一般也是unsigned int
@@ -85,7 +92,11 @@ size_type一般也是unsigned int
 
 使用size_t可能会提高代码的可移植性、有效性或者可读性，或许同时提高这三者。
 
-size_t的定义在<stddef.h>, <stdio.h>, <stdlib.h>, <string.h>, <time.h>和<wchar.h>这些标准C头文件中，也出现在相应的C++头文件, 等等中，你应该在你的头文件中至少包含一个这样的头文件在使用size_t之前。
+size_t的定义在
+```bash
+<stddef.h>, <stdio.h>, <stdlib.h>, <string.h>, <time.h>和<wchar.h>
+```
+这些标准C头文件中，也出现在相应的C++头文件, 等等中，你应该在你的头文件中至少包含一个这样的头文件在使用size_t之前。
 
 适当地使用size_t还会使你的代码变得如同自带文档。当你看到一个对象声明为size_t类型，你马上就知道它代表字节大小或数组索引，而不是错误代码或者是一个普通的算术值。
 
@@ -128,9 +139,9 @@ explicit关键字只能用于类内部的构造函数声明上.这样一来，BO
 隐式类类型转换容易引起错误，除非你有明确理由使用隐式类类型转换，否则，将可以用一个实参进行调用的构造函数都声明为explicit
 
 explicit只能用于类内部构造函数的声明。它虽然能避免隐式类型转换带来的问题，但需要用户能够显式创建临时对象（对用户提出了要求）
-
+```bash
 template<typename T>  
-
+```
 然后下面类的定义中可以使用T为传入参数。
 
 函数对象
