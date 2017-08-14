@@ -47,24 +47,44 @@ ptrdiff_t diff = p2 - p1;
 
 ```
 指针的减法可以计算两个指针之间相隔的元素个数
+
 STL是Standard Template Library的简称，中文名标准模板库，惠普实验室开发的一系列软件的统称。
+
 STL是一些“容器”的集合，这些“容器”有list,vector,set,map等
+
 STL可分为容器(containers)、迭代器(iterators)、空间配置器(allocator)、配接器(adapters)、算法(algorithms)、仿函数(functors)六个部分。
+
 <vector>,<list>,<deque>,<set>,<map>,<stack>和<queue>
+
 迭代器部分主要由头文件<utility>,<iterator>和<memory>组成。<utility>是一个很小的头文件，<memory>中的主要部分是模板类allocator，它负责产生所有容器中的默认分配器。
+
 算法部分主要由头文件<algorithm>，<numeric>和<functional>组成。<algorithm>是所有STL头文件中最大的一个
+
 <numeric>体积很小，只包括几个在序列上面进行简单数学运算的模板函数，包括加法和乘法在序列上的一些操作。<functional>中则定义了一些模板类，用以声明函数对象
+
 size_t是全局定义的类型；size_type是STL类中定义的类型属性，用以保存任意string和vector类对象的长度
+
 size_type一般也是unsigned int
+
+
 在用下标访问元素时，vector使用vector::size_type作为下标类型，而数组下标的正确类型则是size_t
+
 使用size_t可能会提高代码的可移植性、有效性或者可读性，或许同时提高这三者。
+
 size_t的定义在<stddef.h>, <stdio.h>, <stdlib.h>, <string.h>, <time.h>和<wchar.h>这些标准C头文件中，也出现在相应的C++头文件, 等等中，你应该在你的头文件中至少包含一个这样的头文件在使用size_t之前。
+
 适当地使用size_t还会使你的代码变得如同自带文档。当你看到一个对象声明为size_t类型，你马上就知道它代表字节大小或数组索引，而不是错误代码或者是一个普通的算术值。
+
 delete[]  删除数组内存。简单数组使用效果相同，类不同。
+
  delete[]   rg   用来释放rg指向的内存，！！还逐一调用数组中每个对象的destructor
+
  类没有使用操作系统的系统资源（比如：Socket、File、Thread等），所以不会造成明显恶果
+
  RAII的实现原理很简单，利用stack上的临时对象生命期是程序自动管理的这一特点，将我们的资源释放操作封装在一个临时对象中。
+
  显式构造方法就是你自己编写的构造方法，隐式构造方法就是系统缺省的构造的方法，不用你自己写
+
 比如你创建了一个类People的示例对象，但是这个类中并未有构造方法，而你直接用 new People()来初始化了这个对象，而实际上，你并没有编写People这个构造方法
 ```bash
     cout<<A.isSameISBN(B)<<endl;   //正经地进行比较，无需发生转换
@@ -77,17 +97,26 @@ delete[]  删除数组内存。简单数组使用效果相同，类不同。
 
 
 ```
-代码中可以看到，isSameISBN函数是期待一个BOOK类类型形参的，但我们却传递了一个string类型的给它，这不是它想要的啊！还好，BOOK类中有个构造函数，它使用一个string类型实参进行调用，编译器调用了这个构造函数，隐式地将stirng类型转换为BOOK类型（构造了一个BOOK临时对象），再传递给isSameISBN函数。
+
+代码中可以看到，isSameISBN函数是期待一个BOOK类类型形参的，但我们却传递了一个string类型的给它，这不是它想要的啊！还好，BOOK类中有个构造函数，它使用
+
+一个string类型实参进行调用，编译器调用了这个构造函数，隐式地将stirng类型转换为BOOK类型（构造了一个BOOK临时对象），再传递给isSameISBN函数。
+
+
 隐式类类型转换还是会带来风险的，正如上面标记，隐式转换得到类的临时变量，完成操作后就消失了，我们构造了一个完成测试后被丢弃的对象。
 ```bash
 explicit BOOK(string ISBN,float price=0.0f):_bookISBN(ISBN),_price(price){}
 
 ```
+
 explicit关键字只能用于类内部的构造函数声明上.这样一来，BOOK类构造函数就不能用于隐式地创造对象了，编译上面的代码会出现这样的提示：
+
 隐式类类型转换容易引起错误，除非你有明确理由使用隐式类类型转换，否则，将可以用一个实参进行调用的构造函数都声明为explicit
+
 explicit只能用于类内部构造函数的声明。它虽然能避免隐式类型转换带来的问题，但需要用户能够显式创建临时对象（对用户提出了要求）
 
 template<typename T>  
+
 然后下面类的定义中可以使用T为传入参数。
 
 函数对象
