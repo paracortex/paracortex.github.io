@@ -515,7 +515,7 @@ IX -> VI   ,1乘以6，抹掉下面，Six。
 #### 98
 有时要求稳定排序，同分前后顺序不变。
 内排序，外排序。
-![My helpful screenshot]({{aoa.cloud}}/pics/algorithm.png)
-![My helpful screenshot]({{aoa.cloud}}/pics/algo2.png)
+![My helpful screenshot]({{aoa.cloud}}/pics/algorithm.jpg)
+![My helpful screenshot]({{aoa.cloud}}/pics/algo2.jpg)
 
 不同场合，进行适当的改进。
