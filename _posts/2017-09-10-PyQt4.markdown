@@ -4,22 +4,27 @@ title: PyQt4
 date: 2017-09-10 15:32:24.000000000 +09:00
 ---
 
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+#### Pycharm
+__name__
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+如果是放在Modules模块中，就表示是模块的名字；
 
-Jekyll also offers powerful support for code snippets:
+如果是放在Classs类中，就表示类的名字；
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+__main的含义
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+作为mymath.py本身，自己运行时，可以运行到此处的代码，调试，验证自己的函数square执行的是否正确
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+main是模块名字，跟随模块走。    name是主模块名字。
+
+一般来说os._exit() 用于在线程中退出
+
+sys.exit() 用于在主线程中退出。
+
+sys.exit(app.exec_())----消息循环结束之后返回0，接着调用sys.exit(0)退出程序
+
+app.exec_()--------------消息循环结束之后，进程自然也会结束
+
+PYQT可以做界面
+
+需要构想一个项目，或者看到一个中型项目的py源码，来进一步深造PYQT的工程水平
