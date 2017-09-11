@@ -1,368 +1,51 @@
 ---
 layout: post
-title: STL算法
-date: 2017-08-24 00:09:24.000000000 +09:00
+title: UML
+date: 2017-09-05 00:09:24.000000000 +09:00
 ---
 
-#### size_type、size_t、different_type以及ptrdiff_t
-用以保存任意string对象或vector对象的长度，标准库类型将size_type定义为unsigned类型
-
-string::size_type rc = s.find(.....); 这个时候使用 if ( rc == string::npos )就回正确
-
-那么size()这个函数返回的类型到底是什么呢？一定要记住，绝对不是整形，而是size_type类型的，所以千万不要把size的返回值赋给一个int变量。
-
-size_t不是容器概念。
-size_type是容器概念，没有容器不能使用。
-
-使用int变量的问题是：有些机器上的int变量的表示范围太小，甚至无法存储实际并不长的string对象。如在有16位int型的机器上，int类型变量最大只能表示32767个字符的string对象。而能容纳一个文件内容的string对象轻易就能超过这个数字，因此，为了避免溢出，保存一个string对象的size的最安全的方法就是使用标准库类型string：：size_type().
-
-sizeof操作符的返回值的类型也为size_t
-```bash
-int i;                   // 定义一个int类型的变量i
-size_t size = sizeof(i);
-// 用sizeof操作得到变量i的大小，这是一个size_t类型的值
-// 可以用来对一个size_t类型的变量做初始化
-i = (int)size;           // size_t类型的值可以转化为int类型的值
-
-char c = 'a';       // c保存了字符a，占一个字节
-wchar_t wc = L'a';  
-// wc保存了宽字符a，占两个字节。注意'a'表示字符a，L'a'表示宽字符a
-
-int arr[] = {1, 2, 3, 4, 5}; // 定义一个数组
-int* p1 = &arr[0];           // 取得数组中元素的地址，赋值给指针
-int* p2 = &arr[3];
-ptrdiff_t diff = p2 - p1;
-//指针的减法可以计算两个指针之间相隔的元素个数，所得结果是一个ptrdiff_t类型
-i = (int)diff;          // ptrdiff_t类型的值可以转化为int类型的值
-```
-在C++标准中，STL被组织为下面的13个头文件：
-```bash
-<algorithm>、<deque>、<functional>、<iterator>、<array>、<vector>、<list>、<forward_list>、<map>、<unordered_map>、<memory>、<numeric>、<queue>、<set>、<unordered_set>、<stack>和<utility>
-```
-Brooks法则:为推迟的软件增加人力将使得软件时间发布更晚.
-#### STL
-STL可分为容器(containers)、迭代器(iterators)、空间配置器(allocator)、配接器(adapters)、算法(algorithms)、仿函数(functors)六个部分
-序列式容器
-迭代器在STL中用来将算法和容器联系起来，起着一种黏和剂的作用。几乎STL提供的所有算法都是通过迭代器存取元素序列进行工作的
-
-向量，列表，队列，双端队列，栈，优先队列。
-集合(set) 由节点组成的红黑树，每个节点都包含着一个元素，节点之间以某种作用于元素对的谓词排列，没有两个不同的元素能够拥有相同的次序
-多重集合(multiset) 允许存在两个次序相等的元素的集合
-映射(map) 由{键，值}对组成的集合，以某种作用于键对上的谓词排列
-多重映射(multimap) 允许键对有相等的次序的映射
-
-迭代器在STL中用来将算法和容器联系起来，起着一种黏和剂的作用。几乎STL提供的所有算法都是通过迭代器存取元素序列进行工作的
-
-STL提供了大约100个实现算法的模版函数
-
-熟悉了STL之后，许多代码可以被大大的化简，只需要通过调用一两个算法模板，就可以完成所需要的功能并大大地提升效率。
-
-缺点：
-1代码膨胀每一个实例化过的模板类，都会膨胀出一份独立的代码
-2stl在内存使用效率上是比较低效的，比如std::string，它的sizeof大概是28，因为它有一个内置的16字节数组，用来做小字符串优化的，就是说低于16字节的字符串都会至少占用28字节内存，如果刚好17字节字符串，则会占用28字节+额外分配的字符串内存，额外分配的内存是一个堆块，又有很多浪费，相比用一个char * 存储字符串大约多占用了一倍内存。
-3deep copy问题让两个容器的实例做赋值操作，看起来就一条语句，实际上容器里的每个元素都执行了一次赋值操作。如果容器里有百万级的数据，那么一个等号就产生了几百万次的构造和析构。
-传递参数的时候一定要用 const 引用，赋值可以用 swap代替
-4隐式类型转换 临时的匿名的std::string实例 循环体内部有可能影响性能
-有大数据stl容器会成为性能瓶颈的。
-
-STL是其中的一部分内容，std是作为一个外部的名字
-模板函数参数为泛型类型的时候，无法推导出是传值还是传引用，默认情况下会使用传值的方式。这是我们可以用std::ref显式指定
-
-智能指针主要引入了shared_ptr、weak_ptr、unique_ptr三种，其中shared_ptr和weak_ptr就是boost库中的应对象
-auto_ptr可以支持'='操作，也可作为函数的返回值
-unique_ptr不支持'='操作，可以作为函数的返回值
-scoped_ptr即不支持'='操作，也不能作为函数的返回值
-
-所有的智能指针都会重载 -> 和 * 操作符
-
-智能指针用于内存管理，主要是用于对堆上面开辟的内存的管理，具体采用引用计数的机制进行。比如我们在栈上开辟了一块内存m1，并将其赋值给指针p1，那么现在m1这块内存就有一个对象在使用，引用计数为1。这时如果有另外一个指针p2也需要使用m1的内容，那么就将p2也指向m1。问题在于，如果p1使用完毕之后，使用delete语句告诉系统，这块内存我不用了，把它回收吧，那么这时p2还在指着m1的话，再次使用p2的时候就会出问题了。    然后就引入了引用计数的概念。所有的栈上的内存，在还没有被开辟的时候，该块内存的引用计数为0，在第一次用p1开辟的时候引用计数+1变成1，如果有其他指针也需要这块内存，比如一个潜copy操作，比如p2，那么这时候就有两个指针指向m1，引用计数变成2，当p1用完了，就用一个操作切断p1和m1的关系，m1的引用计数变成1。当p2也用完了，那么通过一个操作引用计数再次减去1，引用计数变成0。当智能指针这个对象发现它管理的内存引用计数变成0的时候，对m1做一个delete操作，使之释放。
-
-牝 聘
-
-auto_ptr<Test> ptest(new Test("123"));
-
-香槟金是国产大理石
-
-访问auto_ptr的成员函数时用的是“.”，访问指向对象的成员时用的是“->”
-
-当我们对智能指针进行赋值时，如ptest2 = ptest，ptest2会接管ptest原来的内存管理权，ptest会变为空指针，如果ptest2原来不为空，则它会释放原来的资源，基于这个原因，应该避免把auto_ptr放到容器中，因为算法对容器操作时，很难避免STL内部对容器实现了赋值传递操作，这样会使容器中很多元素被置为NULL。判断一个智能指针是否为空不能使用if(ptest == NULL)，应该使用if(ptest.get() == NULL)
-
-release，这个函数只是把智能指针赋值为空，但是它原来指向的内存并没有被释放，相当于它只是释放了对资源的所有权
-那么当我们想要在中途释放资源，而不是等到智能指针被析构时才释放，我们可以使用ptest.reset(); 语句
-
-auto_ptr不支持传入deleter,所以只能支持单对象(delete object),而unique_ptr对数组类型有偏特化重载,并且还做了相应的优化,比如用[]访问相应元素等.
-控制权移交的过程,所以过了函数调用则原先的auto_ptr已经失效了.在c++11当中有了移动语义,使用move()把unique_ptr传入函数,这样你就知道原先的unique_ptr已经失效了
-```bash
-unique_ptr<Test> fun()
-ptest2 = std::move(ptest);//不能直接ptest2 = ptest
-if(ptest == NULL)cout<<"ptest = NULL\n";
-Test* p = ptest2.release();
-p->print();
-ptest.reset(p);
-ptest->print();
-ptest2 = fun(); //这里可以用=，因为使用了移动构造函数
-ptest2->print();
-```
-两个智能指针赋值操作，应该使用std::move
-直接用if(ptest == NULL)来判断是否空指针；release、get、reset等用法也和auto_ptr一致，使用函数的返回值赋值时，可以直接使用=
-==
-shared_ptr
-use_count()来查看资源的所有者个数
-```bash
-cout << ptest2.use_count() << endl;
+#### UML团队开发流程与管理（第2版） 赖信仁
+## 开始阶段   
 
-```
-weak_ptr是用来解决shared_ptr相互引用时的死锁问题,如果说两个shared_ptr相互引用,那么这两个指针的引用计数永远不可能下降为0,资源永远不会释放。它是对对象的一种弱引用，不会增加对象的引用计数，和shared_ptr之间可以相互转化，shared_ptr可以直接赋值给它，它可以通过调用lock函数来获得shared_ptr。
+1 项目的范围：先找出目前已存在的系统【已知的接口，可用的部分】
 
-如果把其中一个改为weak_ptr就可以了，我们把类A里面的shared_ptr<B> pb_; 改为weak_ptr<B> pb_; 运行结果如下，这样的话，资源B的引用开始就只有1，当pb析构时，B的计数变为0，B得到释放，B释放的同时也会使A的计数减一，同时pa析构时使A的计数减一，那么A的计数为0，A得到释放。shared_ptr可以直接赋值给它，它可以通过调用lock函数来获得shared_ptr。
+2 必要的”业务流程【检查流程】 避免对细节
 
-注意的是我们不能通过weak_ptr直接访问对象的方法，比如B对象中有一个方法print(),我们不能这样访问，pa->pb_->print(); 英文pb_是一个weak_ptr，应该先把它转化为shared_ptr,如：
-```bash
-shared_ptr<B> p = pa->pb_.lock();    p->print();
-```
-仿函数，重载括号
-好处是里面可以带有一些自己的状态。
-传统情况下一个函数要有状态，就是里面用static声明变量，不然就只能送一个结构体指针进来，在那个结构体里保存状态。但是现在，因为它不是函数了，它是对象，对象可以有成员变量，于是这些成员变量就用来保存状态。
+3 技术限制：包括使用的技术以及其他系统间的交流接口规范【无】
 
-boost::shared_ptr是线程安全的，这点在多线程程序中也非常重要
-不要构造一个临时的shared_ptr作为函数的参数
+4 成功关键因素 最关切的问题是什么【fancy + 流畅完成的主业务流】
 
+## 需求分析
 
-boost::function Boost.Function库用来提供一个对象化的函数指针，通过它可以很容易的将一个函数封装为仿函数。
-```bash
-  boost::function<float (int x, float y)> f = &add;
-```
-以上是用function把一个add函数绑定给f
-如果只是封装普通函数（功能类似函数指针），则使用方式和普通函数指针类似，可以直接通过"="来进行函数的封装，通过"()"来实现函数的调用。
-如果用它来封装成员函数（用函数指针来指向成员函数用起来可不是一般的恶心），可以通过如下两种方式：
-```bash
-  boost::function<bool (int)> f
-    X x;
-  f = boost::bind(&X::foo, &x, _1);
-```
-使用 _ 1   来占位. 这里的 _ 1 代表该新函数对象被调用时. 实参表的第1个参数.
-现在要向像 A::func 这样的非静态成员函数绑定.
-若A::func有n个参数, 则 bind 要有 n+2 个参数: 指向成员函数fun的指针, 绑定到this的对象, n个参数
-不论传递给bind 的第2个参数是 对象. 对象指针. 还是智能指针. bind函数都能够正常工作,甚至占位符。
-boost::bind(&A::func, a, 3, 4)();    //输出 3, 4
-boost::bind(&A::func, pa, 3, 4)();   //输出 3, 4
-boost::bind(&A::func, ptr_a, 3, 4)();//输出 3, 4
-同样可以用 _ 1 这样的占位符. 如:
-boost::bind(&A::func, _ 1, 3, 4)(ptr_a);//输出 3, 4
+Eriksson-Penker业务扩展模型 ->官网
 
-bind嵌套 看不懂。
+业务过程建模标注（BPMN）Business Process Modeling Notation，业务过程图（BPD）
 
-Lambda表达式
-g = Lambda x: 2 * x + 1    g(5) 返回 11
+luoo 听完了。。。945
 
-bind(func,a1,a2)() 直接调用； bind(func,_ 2,_ 1)(a1,a2);
-```bash
-1 int *a = new int(5);
-2 boost::shared_ptr ptr1(a);
-3 boost::shared_ptr ptr2(a);　　//错误！
-```
-shared_ptr和scoped_ptr不能用于数组的内存（new []），所以shared_array和scoped_array就是他们的代替品
-```bash
-4     boost::shared_array<test> a(new test[]);
-```
-bind最多接受9个参数，参数数量必须与f的参数数量相等
+用户调用系统，系统调用采集模块，采集模块调用采集卡，等等。 顺序图，类图。
+写uml就是在写文档。它对编程有更好的直接的映射关系。
 
-BOOST_TYPEOF使用一个表达式作为宏的参数，它可以如typeof那样推导出表达式Expr的类型。BOOST_AUTO的功能则与auto类似，使用BOOST_TYPEOF推导表达式Expr类型，然后用这个类型声明变量Var，并将表达式的结果赋值给Var。由于BOOST_AUTO实际上调用了BOOST_TYPEOF，因此它不仅能够声明普通变量，也能够在变量名前加上&或者*修饰，声明引用或者指针变量。
+从用例的角度，去抽象问题。分析参与者的目的。
 
-Boost::lexical_cast 字符、数字来回转化，还可以接收异常。
+业务实体，往往对应类。
 
-boost::thread myThread(threadFun);
+分包，高内聚，松耦合。双向依赖，循环依赖都是不好的分包。
 
-需要注意的是：参数可以是函数对象或者函数指针。并且这个函数无参数，并返回void类型。
+边界类？用来封装门面？
 
-当一个thread执行完成时，这个子线程就会消失。注意这个线程对象不会消失，它仍然是一个还处在它的生存期的C++对象。同理，当对一个堆上的线程对象的指针调用delete时候，线程对象被销毁，操作系统的线程并不能保证就消失。
+控制类，源于用例的动词。在业务逻辑层
 
-boost::thread::yield();
+以上是分析类，设计类可以直接映射代码了。
 
-当前线程放弃余下的时间片。
+关联关系是静态的，属性级别的。依赖是动态的，临时的，随场景变换的。关联的部分，由外部去调用。
 
-myThread.join();
+杜绝双向依赖。
 
-  调用这个方法的线程进入wait状态，直到myThread代表的线程完成为止。如果它不结束的话，join方法就不会返回。join是一个等待子线程结束的最好的方法。如果主程序不调用join方法而直接结束，它的子线程有可能没有执行完成，但是所有的子线程也随之退出。不调用join方法，主线程就不会等待它的子线程
+包含关系是必须，验证账号与取钱。
 
-读写锁 boost可以实现 read_write_mutex
+聚合，组织没了，人员健在。
 
-boost::once_flag，一个once_flag类型和call_once函数能够保证多个线程不会重复的初始化同一个对象
+询问状态机
 
-给线程函数传递参数
-
-RTTI（Run-Time Type Information)，通过运行时类型信息程序能够使用基类的指针或引用来检查这些指针或引用所指的对象的实际派生类型。
-
-虚函数（Virtual Function）是通过一张虚函数表（Virtual Table）来实现的。简称为V-Table
-
-内存对齐计算方法：
-(1)看变量所在偏移地址是否为变量大小的整数倍
-(2)看对齐后的总大小是否为最长变量的整数倍
-
-显式转换，隐式转换。不安全来源于两个方面：其一是类型的窄化转化，会导致数据位数的丢失；其二是在类继承链中，将父类对象的地址（指针）强制转化成子类的地址（指针），这就是所谓的下行转换。“下”表示沿着继承链向下走（向子类的方向走）
-
-static_cast最接近于C风格转换了，但在无关类的类指针之间转换上，有安全性的提升，转换类型，会自动报错。
-```bash
-CBase b; CBase* pb;
-CDerived d; CDerived* pd;
-
-pb = dynamic_cast<CBase*>(&d);     // ok: derived-to-base  ,记得指针和取地址
-pd = dynamic_cast<CDerived*>(&b);//dynamic_cast 要求父类必须是多态类型，虚函数。
-```
-将父类经过dynamic_cast转成子类的指针竟然是空指针！这正是dynamic_cast提升安全性的功能，dynamic_cast可以识别出不安全的下行转换，但并不抛出异常，而是将转换的结果设置成null（空指针）
-
-reinterpret_cast重解释转换
-这个转换是最“不安全”的，两个没有任何关系的类指针之间转换都可以用这个转换实现
-更厉害的是，reinterpret_cast可以把整型数转换成地址（指针），这种转换在系统底层的操作，有极强的平台依赖性，移植性不好。
-以上都要求new_type是指针或引用，尖括号内的。
-
-const_cast  常量向非常量转换
-这个转换并不转换原常量本身，即c还是常量，只是它返回的结果cc是非常量了。
-
-C++类内存分布
-
-先选择左侧的C/C++->命令行，然后在其他选项这里写上/d1 reportAllClassLayout，它可以看到所有相关类的内存布局，如果写上/d1 reportSingleClassLayoutXXX（XXX为类名），则只会打出指定类XXX的内存布局。近期的VS版本都支持这样配置。下面可以定义一个类，像下面这样：
-可以看到子类继承了父类的成员变量，在内存排布上，先是排布了父类的成员变量，接着排布子类的成员变量，同样，成员函数不占字节。
-
-虚继承的作用是减少了对基类的重复，代价是增加了虚表指针的负担（更多的虚表指针）。
-
-1. 每个类都有虚指针和虚表；
-
-2. 如果不是虚继承，那么子类将父类的虚指针继承下来，并指向自身的虚表（发生在对象构造时）。有多少个虚函数，虚表里面的项就会有多少。多重继承时，可能存在多个的基类虚表与虚指针；
-
-3. 如果是虚继承，那么子类会有两份虚指针，一份指向自己的虚表，另一份指向虚基表，多重继承时虚基表与虚基表指针有且只有一份。
-
-如果派生类中有用new分配的内存，就无法释放了。不是虚函数的话，直接调用基类的析构函数了
-定义虚析构函数后，由于多态，当使用delete释放基类指针指向派生类对象时，会调用派生类的虚构函数，然后派生类的析构函数自动调用基类析构函数
-
-构造函数不能为虚函数
-
-用函数名调用的是函数，用类名调用的是类的构造函数，用类的对象名调用的是函数对象
-
-像使用其他iterator一样使用istream_iterator和ostream_iterator，需要iterator头
-
-ofstream: 写操作（输出）的文件类 (由ostream引申而来)
-ifstream: 读操作（输入）的文件类(由istream引申而来)
-fstream: 可同时读写操作的文件类 (由iostream引申而来)
-
-如果我们想要以二进制方式打开文件"example.bin" 来写入一些数据，我们可以通过以下方式调用成员函数open（）来实现
-ofstream file;
-file.open ("example.bin", ios::out | ios::app | ios::binary);
-ofstream, ifstream 和 fstream所有这些类的成员函数open 都包含了一个默认打开文件的方式，这三个类的默认方式各不相同：
-
-back_inserter 是iterator适配器，它使得搜索元素被插入到作为实参的某种容器的尾部，如vector等
-
-如果你还是"坚持传统",习惯直接使用迭代器来工作，那么建议对代码做一些改进，还以最前面的代码为例，在循环开始时调用一次`end()`函数保存成临时变量`end`，然后每次循环比较的时候不再调用`end()`函数，而是直接与临时变量`end`相比，就避免了重复调用`end()`
-
-copy (src, src + 7, srcVec.begin());  copy是前面两个的东西拷贝到第三个里面去。
-
-cout 和 cin就是缓冲区。ostream_iterator<int> ofile(cout, " "); 可以写到缓冲区里面去。
-
-// (看起来src + 7越界了)src + 7 表示结束，srcVec.end()相当于src + 7  ，对copy而言，结尾指针是不参与的？ [first, last)
-
-ostream_iterator<int> output(cout," : ");  ""内是元素间隔内容。
-
-back_inserter应该就是指向量末尾可插入处。
-
-for_each 三个参数[first, last)之间的每一个执行 func 第三个参数，自动入参。
-
-     vector<Test> tvec;
-则for_each(tvec.begin(),tvec.end(),mem_fun_ref(&Test::print));  
-激活每一个类的成员函数。
-mem_fun_ref的作用和用法跟mem_fun一样，唯一的不同就是：当容器中存放的是对象实体的时候用mem_fun_ref，当容器中存放的是对象的指针的时候用mem_fun。
-上述例子中的第二个for_each解决方案, 就得使用me_fun1_ref 这个会返回带一个参数的funtor(仿函数)。
-for_each(ivec.begin(),ivec.end(),bind1st(mem_fun1_ref(&Test::add),t)
-
-functor就是仿函数，重载了括号。
-
-algorithm头下，remove_if
-函数remove_if()移除序列[start, end)中所有应用于谓词p返回true的元素
-容器的长度并不会改变
-将所有应该移除的元素都移动到了容器尾部并返回一个分界的迭代器. 移除的所有元素仍然可以通过返回的迭代器访问到. 为了实际移除元素, 你必须对容器自行调用erase()以擦除需要移除的元素. 这也是erase-remove idiom名称的由来:
-
-container.erase(remove_if(container.begin(), container.end(), pred), container.end());
-
-remove_if()不能用于关联容器如set<>或map<>.
-
-arr.erase( std::remove_if( arr.begin(),  arr.end(),std::bind1st( std::less< int>(), 100)), arr.end());
-
-include <functional>   // std::less
-include <algorithm>    // std::sort, std::includes
-
-sort 从，到，谓词。比较函数。  整理排序。
-std::not1(std::bind2nd( std::greater< int>(), 100)) 来实现反向 小于等于。
-
-unary_function和binary_function 是一元函数和二元函数的基类，同时有一个result。
-
-transform (first.begin(), first.end(), second.begin(), op_increase)
-                                           结果
-transform (first.begin(), first.end(), second.begin(), first.begin(), op_sum);
-                                          第二元              结果
-
-我们使用#把宏参数变为一个字符串,用##把两个宏参数贴合在一起
-
-需要注意的凡是宏定义里有用'#'或'##'的地方宏参数是不会再展开
-
-解宏要分层。
-
-1 # define _ GET_FILE_NAME(f) # f
-2 # define GET_FILE_NAME(f) _ GET_FILE_NAME(f)
-记录文件名。
-
-extern char * a声明的是一个指针变量而不是字符数组，因此与实际的定义不同，从而造成运行时非法访问。应该将声明改为extern char a[ ]。
-3)、这提示我们，在使用extern时候要严格对应声明时的格式，在实际编程中，这样的错误屡见不鲜。
-
-调用方include该头文件，从而省去extern这一步。以避免这种错误。宝剑有双锋，对extern的应用，不同的场合应该选择不同的做法。
-
-static与extern是一对“水火不容”的家伙，也就是说extern和static不能同时修饰一个变量；其次，static修饰的全局变量声明与定义同时进行，也就是说当你在头文件中使用static声明了全局变量后，它也同时被定义了；最后，static修饰全局变量的作用域只能是本身的编译单元，也就是说它的“全局”只对本编译单元有效，其他编译单元则看不到它
-
-所以一般定义static全局变量时，都把它放在原文件中而不是头文件，这样就不会给其他模块造成不必要的信息污染
-
-C++中const修饰的全局常量据有跟static相同的特性，即它们只能作用于本编译模块中，但是const可以与extern连用来声明该常量可以作用于其他编译模块中, 如extern const char g_str[];
-然后在原文件中别忘了定义: const char g_str[] = "123456";
-
-左值指的是既能够出现在等号左边也能出现在等号右边的变量(或表达式)，右值指的则是只能出现在等号右边的变量(或表达式
-
-cpp中，对于自定义的类型(user-defined types)，右值却允许通过它的成员函数进行修改
-
-String&&是C++11中的特性，叫做“右值引用”。它只能绑定到右值，即临时对象或将销毁的对象。因此可以把String&&所引用的资源强制拿来使用，且不用重新分配空间。即把String&&所引用对象的资源复制给*this。
-
-string&是传递引用，感觉也没区别。
-
-const string& & 还是略有区别的，如果重载丰富，会自动对号入座。否则都给隐式转换了、
-
-std::bind不使用引用
-所以
-  std::function<void()> bound_f = std::bind(f, n1, std::ref(n2), std::cref(n3))
-  修改 n1 n2 n3 之后，会有所改变。 n1不变。
-
-  DRY（Don't Repeat Yourself，不要重复粘帖你的代码）原则
-
-C++98/03
-
-auto &f = foo(); // compiler error 不能直接指向函数，可以指向函数的引用。 auto g = bar(); // int   int &bar();
-
-C++将volatile和const成为cv-qualifier
-
-volatile关键字是一种类型修饰符，用它声明的类型变量表示可以被某些编译器未知的因素更改，比如：操作系统、硬件或者其它线程等。由于访问寄存器的速度要快过RAM，所以编译器一般都会作减少存取外部RAM的优化。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。volatile的本意是“易变的”，不过翻译成“直接存取原始内存地址”更为合适
-volatile 指出 i是随时可能发生变化的，每次使用它的时候必须从i的地址中读取，因而编译器生成的汇编代码会重新从i的地址读取数据放在b中。而优化做法是，由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作，它会自动把上次读的数据放在b中。而不是重新从i里面读。这样以来，如果i是一个寄存器变量或者表示一个端口数据就容易出错，所以说volatile可以保证对特殊地址的稳定访问。
-
-中断服务程序中修改的供其它程序检测的变量需要加volatile；
-多任务环境下各任务间共享的标志应该加volatile；
-存储器映射的硬件寄存器通常也要加volatile说明，因为每次对它的读写都可能由不同意义。
-
-multimap 容器，它与 map 类似，所不同的是它允许重复键，比如在电话簿中相同的人可以有两个以上电话号码
-DNS，关联到多个 URLs。这些 URLs 全都指向相同的站点，用成员函数 insert插入。
-DNS_daemon.insert(make_pair("213.108.96.7","cppluspluszone.com"));
-
-其中tuple和array基本上就是boost相关库给标准化了，而unordered_set和unordered_map则是hash表方式的set和map，以提供更高的查询性能。使用方式和原来二叉树版的也大同小异
-
-Boost的时间函数chrono已经给标准化了
-```bash
-  auto start = chrono::system_clock::now();
-   int result = fibonacci(40);
-   auto end = chrono::system_clock::now();
-   int elapsed_seconds = chrono::duration_cast<chrono::milliseconds>
-                                  (end-start).count();
-```
-日期函数Boost.Date好像还没有标准化，要用到日期相关功能还是只能用boost库
+架构是分层，框架是软件。
