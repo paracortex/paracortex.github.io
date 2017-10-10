@@ -28,3 +28,13 @@ app.exec_()--------------消息循环结束之后，进程自然也会结束
 PYQT可以做界面
 
 需要构想一个项目，或者看到一个中型项目的py源码，来进一步深造PYQT的工程水平
+
+#### 安装程序框架
+Tab的问题在于，需要定制样式，当不希望显示它的时候，会需要处理。
+而实现的重点要素 1 能选取某一个序号的tab 2能show这个Tab 3子tab需要关联注入Tab整体，以实现切换触发。
+
+BasicWnd就是子tab的1大小，2序号，3Lord引用，4切换触发，具体子tab继承它
+
+Manager就是1产生stack，2new出self.子tab，3addStack+反addRef=双向关联大Tab整体，4，三要素。要简化这个框架的话，让manager作为程序去show
+
+每一个Widget三要素：1布局setLayout，setGeometry 2主Wnd Widget需要命名 SetWindowTitle 3主需要Show() ，从需要被主选中
